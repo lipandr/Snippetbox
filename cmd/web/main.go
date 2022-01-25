@@ -16,12 +16,12 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer func(f *os.File) {
+	defer func() {
 		err := f.Close()
 		if err != nil {
 			log.Fatal(err)
 		}
-	}(f)
+	}()
 
 	infoLog := log.New(f, "INFO\t", log.Ldate|log.Ltime)
 	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
