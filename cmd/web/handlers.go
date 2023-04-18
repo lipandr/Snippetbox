@@ -32,8 +32,6 @@ func home(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Internal server error", 500)
 		return
 	}
-
-	//w.Write([]byte("Hello from Snippetbox"))
 }
 
 func showSnippet(w http.ResponseWriter, r *http.Request) {
