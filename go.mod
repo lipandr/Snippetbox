@@ -1,3 +1,3 @@
-module lipandr.me/snippetbox
+module github.com/lipandr/Snippetbox
 
-go 1.17
+go 1.19
