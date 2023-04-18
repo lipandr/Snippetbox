@@ -17,18 +17,19 @@ func main() {
 	addr := flag.String("addr", ":4000", "Сетевой адрес HTTP")
 	flag.Parse()
 
-	f, err := os.OpenFile("info.log", os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0666)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer func() {
-		err := f.Close()
-		if err != nil {
-			log.Fatal(err)
-		}
-	}()
+	//f, err := os.OpenFile("info.log", os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0666)
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
+	//defer func() {
+	//	err := f.Close()
+	//	if err != nil {
+	//		log.Fatal(err)
+	//	}
+	//}()
 
-	infoLog := log.New(f, "INFO\t", log.Ldate|log.Ltime)
+	//infoLog := log.New(f, "INFO\t", log.Ldate|log.Ltime)
+	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 
 	app := &application{
@@ -52,7 +53,7 @@ func main() {
 	}
 
 	infoLog.Printf("Server started at %s", *addr)
-	err = srv.ListenAndServe()
+	err := srv.ListenAndServe()
 	errorLog.Fatal(err)
 }
 
