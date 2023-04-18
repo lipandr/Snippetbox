@@ -14,21 +14,9 @@ type application struct {
 }
 
 func main() {
-	addr := flag.String("addr", ":4000", "Сетевой адрес HTTP")
+	addr := flag.String("addr", ":4000", "HTTP network address")
 	flag.Parse()
 
-	//f, err := os.OpenFile("info.log", os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0666)
-	//if err != nil {
-	//	log.Fatal(err)
-	//}
-	//defer func() {
-	//	err := f.Close()
-	//	if err != nil {
-	//		log.Fatal(err)
-	//	}
-	//}()
-
-	//infoLog := log.New(f, "INFO\t", log.Ldate|log.Ltime)
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 
@@ -37,19 +25,10 @@ func main() {
 		infoLog:  infoLog,
 	}
 
-	mux := http.NewServeMux()
-	mux.HandleFunc("/", app.home)
-	mux.HandleFunc("/snippet", app.showSnippet)
-	mux.HandleFunc("/snippet/create", app.createSnippet)
-
-	fileServer := http.FileServer(neuteredFileSystem{http.Dir("./ui/static/")})
-	mux.Handle("/static", http.NotFoundHandler())
-	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
-
 	srv := &http.Server{
 		Addr:     *addr,
 		ErrorLog: errorLog,
-		Handler:  mux,
+		Handler:  app.routes(),
 	}
 
 	infoLog.Printf("Server started at %s", *addr)
