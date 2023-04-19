@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"runtime/debug"
+	"time"
 )
 
 // The serverError helper writes an error message and stack trace to the errorLog,
@@ -30,7 +31,7 @@ func (app *application) notFound(w http.ResponseWriter) {
 }
 
 // The render helper renders a template with a given name
-func (app *application) render(w http.ResponseWriter, _ *http.Request, name string, td *templateData) {
+func (app *application) render(w http.ResponseWriter, r *http.Request, name string, td *templateData) {
 	// Retrieve the appropriate template set from the cache based on the page name
 	// (like 'home.page.tmpl'). If no entry exists in the cache with the
 	// provided name, call the serverError helper method that we made earlier.
@@ -43,10 +44,18 @@ func (app *application) render(w http.ResponseWriter, _ *http.Request, name stri
 	buf := new(bytes.Buffer)
 
 	// Execute the template set, passing in any dynamic data.
-	err := ts.Execute(buf, td)
+	err := ts.Execute(buf, app.addDefaultData(td, r))
 	if err != nil {
 		app.serverError(w, err)
 	}
 
 	_, _ = buf.WriteTo(w)
+}
+
+func (app *application) addDefaultData(td *templateData, _ *http.Request) *templateData {
+	if td == nil {
+		td = &templateData{}
+	}
+	td.CurrentYear = time.Now().Year()
+	return td
 }
