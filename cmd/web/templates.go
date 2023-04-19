@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/lipandr/Snippetbox/pkg/forms"
 	"html/template"
 	"path/filepath"
 	"time"
@@ -10,6 +11,7 @@ import (
 
 type templateData struct {
 	CurrentYear int
+	Form        *forms.Form
 	Snippet     *models.Snippet
 	Snippets    []*models.Snippet
 }
