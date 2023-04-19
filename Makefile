@@ -29,3 +29,4 @@ build_app:
 	mv snippetboxApp ./cmd/web
 	@echo "Done!"
 
+restart: down up_build
