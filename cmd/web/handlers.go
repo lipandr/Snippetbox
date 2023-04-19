@@ -6,6 +6,8 @@ import (
 	"github.com/lipandr/Snippetbox/pkg/models"
 	"net/http"
 	"strconv"
+	"strings"
+	"unicode/utf8"
 )
 
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
@@ -57,6 +59,30 @@ func (app *application) createSnippet(w http.ResponseWriter, r *http.Request) {
 	title := r.PostForm.Get("title")
 	content := r.PostForm.Get("content")
 	expires := r.PostForm.Get("expires")
+
+	formErrors := make(map[string]string)
+	if strings.TrimSpace(title) == "" {
+		formErrors["title"] = "Title can't be blank"
+	} else if utf8.RuneCountInString(title) > 100 {
+		formErrors["title"] = "Title is too long (maximum is 100 characters)"
+	}
+	if strings.TrimSpace(content) == "" {
+		formErrors["content"] = "This field cannot be blank"
+	}
+
+	if strings.TrimSpace(expires) == "" {
+		formErrors["expires"] = "This field cannot be blank"
+	} else if expires != "365" && expires != "7" && expires != "1" {
+		formErrors["expires"] = "This field is invalid"
+	}
+
+	if len(formErrors) > 0 {
+		app.render(w, r, "create.page.tmpl", &templateData{
+			FormErrors: formErrors,
+			FormData:   r.PostForm,
+		})
+		return
+	}
 
 	// Pass the data to the SnippetModel.Insert() method, receiving the
 	// ID of the new record back.
