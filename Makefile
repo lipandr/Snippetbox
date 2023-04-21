@@ -30,3 +30,6 @@ build_app:
 	@echo "Done!"
 
 restart: down up_build
+
+test:
+	go test -v ./cmd/web
