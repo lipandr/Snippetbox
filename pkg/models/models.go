@@ -23,5 +23,5 @@ type User struct {
 	Email          string    `json:"email"`
 	HashedPassword []byte    `json:"-"`
 	Created        time.Time `json:"-"`
-	Activated      bool      `json:"-"`
+	Active         bool      `json:"-"`
 }
