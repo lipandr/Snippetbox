@@ -32,4 +32,4 @@ build_app:
 restart: down up_build
 
 test:
-	go test -v ./cmd/web
+	go test -v -race ./cmd/web
