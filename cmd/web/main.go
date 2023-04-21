@@ -4,6 +4,7 @@ import (
 	"crypto/tls"
 	"database/sql"
 	"flag"
+	"github.com/lipandr/Snippetbox/pkg/models"
 	"html/template"
 	"log"
 	"net/http"
@@ -22,13 +23,25 @@ const contextKeyIsAuthenticated = contextKey("isAuthenticated")
 
 var dbConnCounts int
 
+type snippets interface {
+	Insert(title, content, expires string) (int, error)
+	Get(id int) (*models.Snippet, error)
+	Latest() ([]*models.Snippet, error)
+}
+
+type users interface {
+	Insert(name, email, password string) error
+	Authenticate(email, password string) (int, error)
+	Get(id int) (*models.User, error)
+}
+
 type application struct {
 	errorLog      *log.Logger
 	infoLog       *log.Logger
 	session       *sessions.Session
-	snippets      *mysql.SnippetModel
+	snippets      snippets
 	templateCache map[string]*template.Template
-	users         *mysql.UserModel
+	users         users
 }
 
 func main() {
